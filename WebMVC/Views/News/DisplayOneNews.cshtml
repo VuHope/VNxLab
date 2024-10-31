@@ -1,0 +1,29 @@
+﻿@model NewsViewModel
+@{
+    ViewData["Title"] = Model.News.PageTitle;
+}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-6">
+
+            @if (Model != null)
+            {
+                <h1 class="mb-3">@Model.News.Heading</h1>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-secondary">Ngày đăng bài: @Model.News.DatePublished.ToShortDateString()</span>
+                </div>
+                <img src="@Model.News.NewsImage" class="d-block img-fluid mb-3" />
+
+                <div class="mb-3 blog-details-content">
+                    @Html.Raw(Model.News.Content)
+                </div>
+
+            }
+            else
+            {
+                <p>Blog post not found!</p>
+            }
+        </div>
+    </div>
+</div>
