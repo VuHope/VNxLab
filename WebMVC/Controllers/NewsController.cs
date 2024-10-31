@@ -137,6 +137,7 @@ namespace WebMVC.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var newsList = await _newsRepository.GetAll();
@@ -148,6 +149,7 @@ namespace WebMVC.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> DisplayOneNews(string urlHandle)
         {
             var result = await _newsRepository.GetByUrlHandle(urlHandle);
