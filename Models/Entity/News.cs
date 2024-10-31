@@ -14,8 +14,5 @@ namespace Models.Entity
         public string? NewsImage { get; set; }
         public string? UrlHandle { get; set; }
         public DateTime DatePublished { get; set; }
-        public string? UserId { get; set; }
-        [ForeignKey("UserId")]
-        public ApplicationUser? ApplicationUser { get; set; }
     }
 }

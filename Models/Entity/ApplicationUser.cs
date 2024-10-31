@@ -18,6 +18,5 @@ namespace Models.Entity
         public virtual ICollection<Comment>? Comments { get; set; }
         public virtual ICollection<Rating>? Ratings { get; set; }
         public virtual ICollection<ResearchProduct>? ResearchProducts { get; set; }
-        public virtual ICollection<News>? NewsPost { get; set; }
     }
 }

@@ -22,7 +22,6 @@ namespace WebMVC.Data
         public DbSet<ResearchProductCategory> ResearchProductCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<PortfolioImage> PortfolioImages { get; set; }
-
         public DbSet<News> News { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -59,13 +58,6 @@ namespace WebMVC.Data
                 .HasForeignKey(rpc => rpc.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<News>()
-                .HasOne(n => n.ApplicationUser)
-                .WithMany(a => a.NewsPost)
-                .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
         }
-
     }
 }
