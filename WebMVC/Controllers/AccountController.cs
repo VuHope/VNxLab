@@ -44,6 +44,10 @@ namespace WebMVC.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
+                    // Lưu UserId vào Session
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    HttpContext.Session.SetString("UserId", user.Id);
+
                     return LocalRedirect(returnurl);
                 }
                 if (result.IsLockedOut)

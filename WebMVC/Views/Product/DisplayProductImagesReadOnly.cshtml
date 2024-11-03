@@ -1,0 +1,26 @@
+﻿@model ProductViewModel
+
+<div class="container my-5">
+    <h1 class="mb-4">@Model.ResearchProduct.Title</h1>
+    <p>@Model.ResearchProduct.CreatedAt.ToShortDateString()</p>
+
+    <div class="row">
+        @foreach (var image in Model.ProductImages)
+        {
+            <div class="col-12 mb-4">
+                <div class="card image-card">
+                    <div class="image-container position-relative">
+                        <img src="@image.ImagePath" class="card-img-top" alt="Product Image">
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .card-img-top {
+        width: 100%;
+        height: auto;
+    }
+</style>
