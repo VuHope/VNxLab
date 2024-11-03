@@ -1,0 +1,58 @@
+﻿@model List<ResearchProduct>
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-success bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Product List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body py-4">
+        <div class="row mb-3">
+            <div class="col-12 text-end">
+                <a class="btn btn-primary" asp-controller="Product" asp-action="Create">
+                    Add Product
+                </a>
+            </div>
+        </div>
+        @if (Model.Count() > 0)
+        {
+            <table class="table table-bordered table-striped">
+                <tr class="table-secondary text-center">
+                    <th>Id</th>
+                    <th>Tiêu đề</th>
+                    <th>Ngày tạo</th>
+                    <th>Hành động</th>
+                </tr>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>@product.Id</td>
+                        <td>@product.Title</td>
+                        <td>@product.CreatedAt.ToString("dd/MM/yyyy")</td>
+                        <td style="width:450px;">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a asp-area="" asp-controller="Product" asp-action="Details" asp-route-Id="@product.Id" class="btn btn-warning w-100" style="cursor:pointer">
+                                        Details
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <a asp-area="" asp-controller="Product" asp-action="Update" asp-route-Id="@product.Id" class="btn btn-warning w-100" style="cursor:pointer">
+                                        Update
+                                    </a>
+                                </div>
+                                <div class="col-6">
+                                    <form asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger w-100">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+</div>
