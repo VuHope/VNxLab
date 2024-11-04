@@ -50,12 +50,16 @@ namespace WebMVC.Controllers
             {
                 return NotFound();
             }
-
+            // Kiểm tra nếu đây là tài khoản admin mặc định
+            if (user.Email == "admin@gmail.com")
+            {
+                TempData[SD.Error] = "Không thể thay đổi role của tài khoản admin mặc định.";
+                return RedirectToAction(nameof(Index)); // Hoặc trả về view phù hợp
+            }
             List<string> exstingUserRoles = await _userManager.GetRolesAsync(user) as List<string>;
             var model = new RolesViewModel
             {
                 User = user,
-
             };
 
             foreach (var role in _roleManager.Roles)

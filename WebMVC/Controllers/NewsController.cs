@@ -49,6 +49,7 @@ namespace WebMVC.Controllers
             var result = await _newsRepository.CreateNews(newsMV.News);
             if (result != null)
             {
+                TempData["Success"] = "News created successfully";
                 return RedirectToAction("List");
             }
             return View(newsMV);
@@ -101,6 +102,7 @@ namespace WebMVC.Controllers
             var result = await _newsRepository.UpdateNews(newsMV.News);
             if (result != null)
             {
+                TempData["Success"] = "News updated successfully";
                 return RedirectToAction("List");
             }
             else
@@ -133,6 +135,7 @@ namespace WebMVC.Controllers
                     System.IO.File.Delete(imagePath);
                 }
             }
+            TempData["Success"] = "News deleted successfully";
             return RedirectToAction("List");
         }
 
