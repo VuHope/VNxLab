@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Localization
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -39,8 +40,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="News" asp-action="Index">News</a>
                         </li>
-                        
                     </ul>
+                    @{
+                        var selectedCulture = Context.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName]?.Split('|').FirstOrDefault()?.Split('=').Last();
+                        var englishOption = selectedCulture == "en-US" ? "<option value='en-US' selected>English</option>" : "<option value='en-US'>English</option>";
+                        var vietnameseOption = selectedCulture == "vi-VN" ? "<option value='vi-VN' selected>Tiếng Việt</option>" : "<option value='vi-VN'>Tiếng Việt</option>";
+                    }
+                    <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" method="post" class="form-inline">
+                        <select name="culture" onchange="this.form.submit();" class="form-control">
+                            @Html.Raw(englishOption)
+                            @Html.Raw(vietnameseOption)
+                        </select>
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                    </form>
                 </div>
                 <partial name="_LoginPartialCustom" />
             </div>

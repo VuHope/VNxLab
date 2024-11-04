@@ -42,6 +42,7 @@ namespace WebMVC.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: true);
+                
                 if (result.Succeeded)
                 {
                     return LocalRedirect(returnurl);
@@ -63,20 +64,8 @@ namespace WebMVC.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Register(string returnurl = null)
         {
-            if (!_roleManager.RoleExistsAsync(SD.Admin).GetAwaiter().GetResult())
-            {
-                await _roleManager.CreateAsync(new IdentityRole(SD.Admin));
-                await _roleManager.CreateAsync(new IdentityRole(SD.User));
-            }
             ViewData["ReturnUrl"] = returnurl;
-            RegisterViewModel model = new RegisterViewModel()
-            {
-                RolesList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
-                {
-                    Text = i,
-                    Value = i
-                })
-            };
+            RegisterViewModel model = new RegisterViewModel();
             return View(model);
         }
         [HttpPost]
@@ -98,15 +87,9 @@ namespace WebMVC.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    if (model.RoleSetected != null && model.RoleSetected.Length > 0 && model.RoleSetected == SD.Admin)
-                    {
-                        await _userManager.AddToRoleAsync(user, SD.Admin);
-                    }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, SD.User);
-                    }
+                    await _userManager.AddToRoleAsync(user, SD.User);
                     await _signInManager.SignInAsync(user, isPersistent: false);
+                    TempData[SD.Success] = "Account created successfully.";
                     return LocalRedirect(returnurl);
                 }
                 AddErrors(result);
@@ -182,6 +165,7 @@ namespace WebMVC.Controllers
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
             if (result.Succeeded)
             {
+                TempData[SD.Success] = "Password reset successfully.";
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
