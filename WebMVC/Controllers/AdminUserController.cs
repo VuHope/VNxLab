@@ -117,6 +117,12 @@ namespace WebMVC.Controllers
             {
                 return NotFound();
             }
+            // Kiểm tra nếu người dùng là admin
+            if (user.Email == "admin@gmail.com")
+            {
+                TempData[SD.Error] = "Bạn không thể khóa tài khoản admin.";
+                return RedirectToAction(nameof(Index));
+            }
             if (user.LockoutEnd != null && user.LockoutEnd > DateTime.Now)
             {
                 //user is locked and will remain locked untill lockoutend time

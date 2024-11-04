@@ -21,7 +21,6 @@ namespace WebMVC.Controllers
         public IActionResult Index()
         {
             ViewData["Message"] = _localizer["Welcome"];
-            var selectedCulture = Request.Cookies[CookieRequestCultureProvider.DefaultCookieName];
             return View();
         }
 
