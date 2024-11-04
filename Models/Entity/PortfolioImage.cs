@@ -7,9 +7,9 @@ namespace Models.Entity
     {
         [Key]
         public int Id { get; set; }
-        public int? PortfolioId { get; set; }
-        public string? Path { get; set; }
-        [ForeignKey("PortfolioId")]
-        public virtual Portfolio? Portfolio { get; set; }
+        public int PortfolioId { get; set; } 
+        public string ImageUrl { get; set; } 
+
+        public Portfolio Portfolio { get; set; }
     }
 }
