@@ -12,8 +12,8 @@ using WebMVC.Data;
 namespace WebMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241103185943_initial")]
-    partial class initial
+    [Migration("20241104081943_addtodb")]
+    partial class addtodb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -385,6 +385,25 @@ namespace WebMVC.Migrations
                     b.ToTable("PortfolioImages");
                 });
 
+            modelBuilder.Entity("Models.Entity.ProductImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductImages");
+                });
+
             modelBuilder.Entity("Models.Entity.Rating", b =>
                 {
                     b.Property<int>("Id")
@@ -425,16 +444,19 @@ namespace WebMVC.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CoverImg")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Summary")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlHandle")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
