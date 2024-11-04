@@ -75,5 +75,29 @@ namespace WebMVC.Repository
             }
             return null;
         }
+
+        public async Task AddCategoryToProduct(int productId, int categoryId)
+        {
+            var productCategory = new ResearchProductCategory
+            {
+                ProductId = productId,
+                CategoryId = categoryId
+            };
+            _dbContext.ResearchProductCategories.Add(productCategory);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveCategoryFromProduct(int productId, int categoryId)
+        {
+            var productCategory = await _dbContext.ResearchProductCategories
+                .FirstOrDefaultAsync(pc => pc.ProductId == productId && pc.CategoryId == categoryId);
+
+            if (productCategory != null)
+            {
+                _dbContext.ResearchProductCategories.Remove(productCategory);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
     }
 }

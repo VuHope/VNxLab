@@ -10,5 +10,7 @@ namespace WebMVC.Repository.IRepository
         Task<ResearchProduct?> Update(ResearchProduct researchProduct);
         Task<ResearchProduct?> Delete(int id);
         Task<ResearchProduct?> GetByUrlHandle(string urlHandle);
+        Task AddCategoryToProduct(int productId, int categoryId);
+        Task RemoveCategoryFromProduct(int productId, int categoryId);
     }
 }
