@@ -22,6 +22,7 @@ namespace WebMVC.Data
         public DbSet<ResearchProductCategory> ResearchProductCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<PortfolioImage> PortfolioImages { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<News> News { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

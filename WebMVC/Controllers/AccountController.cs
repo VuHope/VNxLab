@@ -45,6 +45,10 @@ namespace WebMVC.Controllers
                 
                 if (result.Succeeded)
                 {
+                    // Lưu UserId vào Session
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    HttpContext.Session.SetString("UserId", user.Id);
+
                     return LocalRedirect(returnurl);
                 }
                 if (result.IsLockedOut)
