@@ -12,16 +12,18 @@ namespace WebMVC.Controllers
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IProductImage _productImageRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductController(IProductRepository productRepository, IProductImage productImageRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public ProductController(IProductRepository productRepository, IProductImage productImageRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _productImageRepository = productImageRepository;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _categoryRepository = categoryRepository;
         }
 
         [Authorize(Roles = "Admin")]
@@ -35,20 +37,37 @@ namespace WebMVC.Controllers
         // GET: ProductController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var data = await _productRepository.GetById(id); 
-            if (data == null)
+            var product = await _productRepository.GetById(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return View(data);
+
+            // Lấy danh sách các Category liên kết với sản phẩm
+            var categories = await _categoryRepository.GetCategoriesByProductId(id);
+
+            var productViewModel = new ProductViewModel
+            {
+                ResearchProduct = product,
+                Categories = categories.ToList()
+            };
+
+            return View(productViewModel);
         }
+
 
 
         // GET: ProductController/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var categories = await _categoryRepository.GetAll();
+            var productViewModel = new ProductViewModel
+            {
+                Categories = categories.ToList()
+            };
+            return View(productViewModel);
         }
+
 
         // POST: ProductController/Create
         [HttpPost]
@@ -78,9 +97,14 @@ namespace WebMVC.Controllers
                 productViewModel.ResearchProduct.CoverImg = @"\images\product\" + fileName;
             }
 
+            
             var result = await _productRepository.Create(productViewModel.ResearchProduct);
             if (result != null)
             {
+                foreach (var categoryId in productViewModel.SelectedCategoryIds)
+                {
+                    await _productRepository.AddCategoryToProduct(result.Id, categoryId);
+                }
                 return RedirectToAction("List");
             }
             return View(productViewModel);
@@ -95,9 +119,14 @@ namespace WebMVC.Controllers
                 return NotFound();
             }
 
+            var categories = await _categoryRepository.GetAll();
+            var selectedCategories = await _categoryRepository.GetCategoriesByProductId(id);
+
             var productViewModel = new ProductViewModel
             {
-                ResearchProduct = product
+                ResearchProduct = product,
+                Categories = categories.ToList(),
+                SelectedCategoryIds = selectedCategories.Select(c => c.Id).ToList()
             };
 
             return View(productViewModel);
@@ -132,8 +161,29 @@ namespace WebMVC.Controllers
             }
 
             var result = await _productRepository.Update(productViewModel.ResearchProduct);
+
+
             if (result != null)
             {
+                // Cập nhật các Category liên kết
+                var existingCategories = await _categoryRepository.GetCategoriesByProductId(result.Id);
+                var existingCategoryIds = existingCategories.Select(c => c.Id).ToList();
+
+                // Thêm cate
+                var categoriesToAdd = productViewModel.SelectedCategoryIds.Except(existingCategoryIds).ToList();
+                foreach (var categoryId in categoriesToAdd)
+                {
+                    await _productRepository.AddCategoryToProduct(result.Id, categoryId);
+                }
+
+                // Xóa cate
+                var categoriesToRemove = existingCategoryIds.Except(productViewModel.SelectedCategoryIds).ToList();
+                foreach (var categoryId in categoriesToRemove)
+                {
+                    await _productRepository.RemoveCategoryFromProduct(result.Id, categoryId);
+                }
+
+
                 return RedirectToAction("List");
             }
             else
@@ -249,14 +299,23 @@ namespace WebMVC.Controllers
             // Lấy tất cả ảnh liên quan đến sản phẩm từ ProductImageRepository
             var productImages = await _productImageRepository.GetByProductId(product.Id);
 
+            // Lấy tất cả các category của product
+            var allCategories = await _categoryRepository.GetAll();
+
+            // Lấy các Category đã được liên kết với sản phẩm
+            var selectedCategories = await _categoryRepository.GetCategoriesByProductId(product.Id);
+
             var productViewModel = new ProductViewModel
             {
                 ResearchProduct = product,
-                ProductImages = productImages.ToList()
+                ProductImages = productImages.ToList(),
+                Categories = allCategories.ToList(), 
+                SelectedCategoryIds = selectedCategories.Select(c => c.Id).ToList() 
             };
 
             return View(productViewModel);
         }
+
 
         [HttpGet]
         [AllowAnonymous]
@@ -271,10 +330,14 @@ namespace WebMVC.Controllers
             // Lấy tất cả ảnh liên quan đến sản phẩm từ ProductImageRepository
             var productImages = await _productImageRepository.GetByProductId(product.Id);
 
+            // Lấy tất cả các category của product
+            var categories = await _categoryRepository.GetCategoriesByProductId(product.Id);
+
             var productViewModel = new ProductViewModel
             {
                 ResearchProduct = product,
-                ProductImages = productImages.ToList()
+                ProductImages = productImages.ToList(),
+                Categories = categories.ToList()
             };
 
             return View(productViewModel);
@@ -326,5 +389,31 @@ namespace WebMVC.Controllers
             }
             return RedirectToAction("DisplayProductImages", new { id = productId });
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProductCategories(int productId, List<int> selectedCategoryIds)
+        {
+            var existingCategories = await _categoryRepository.GetCategoriesByProductId(productId);
+            var existingCategoryIds = existingCategories.Select(c => c.Id).ToList();
+
+            // Thêm category mới
+            var categoriesToAdd = selectedCategoryIds.Except(existingCategoryIds).ToList();
+            foreach (var categoryId in categoriesToAdd)
+            {
+                await _productRepository.AddCategoryToProduct(productId, categoryId);
+            }
+
+            // Xóa category không còn chọn
+            var categoriesToRemove = existingCategoryIds.Except(selectedCategoryIds).ToList();
+            foreach (var categoryId in categoriesToRemove)
+            {
+                await _productRepository.RemoveCategoryFromProduct(productId, categoryId);
+            }
+
+            return RedirectToAction("DisplayProductImages", new { id = productId });
+        }
+
+
     }
 }

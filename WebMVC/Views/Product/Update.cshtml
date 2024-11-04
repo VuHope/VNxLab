@@ -24,6 +24,19 @@
             <input type="text" class="form-control" id="content" asp-for="ResearchProduct.Content" />
         </div>
 
+        <div>
+            @foreach (var category in Model.Categories)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="SelectedCategoryIds" value="@category.Id"
+                    @(Model.SelectedCategoryIds.Contains(category.Id) ? "checked" : "") />
+                    <label class="form-check-label" for="category-@category.Id">
+                        @category.Name
+                    </label>
+                </div>
+            }
+        </div>
+
         <div class="mb-3">
             <label class="form-label">URL Handle</label>
             <input type="text" class="form-control" id="urlHandle" asp-for="ResearchProduct.UrlHandle" />
