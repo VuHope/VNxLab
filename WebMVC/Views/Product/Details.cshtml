@@ -1,0 +1,66 @@
+﻿@model ProductViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Research Product</h4>
+
+    <div>
+        <h5>Cover Image:</h5>
+        <img src="@Model.ResearchProduct.CoverImg" alt="Product Image" style="max-width: 100%; height: auto;" />
+    </div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ResearchProduct.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ResearchProduct.Id)
+        </dd>
+        <dt class="col-sm-2">Author</dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ResearchProduct.UserId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ResearchProduct.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ResearchProduct.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ResearchProduct.Summary)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ResearchProduct.Summary)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ResearchProduct.Content)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ResearchProduct.Content)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ResearchProduct.CreatedAt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ResearchProduct.CreatedAt)
+        </dd>
+
+        <!-- Hiển thị danh sách các Category -->
+        <dt class="col-sm-2">Categories</dt>
+        <dd class="col-sm-10">
+            @foreach (var category in Model.Categories)
+            {
+                <span class="badge bg-secondary">@category.Name</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ResearchProduct.Id }) |
+    <a asp-action="Index">Back to List</a>
+</div>

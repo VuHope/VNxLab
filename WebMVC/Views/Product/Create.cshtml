@@ -1,0 +1,56 @@
+﻿@model ProductViewModel
+
+<div class="bg-secondary bg-opacity-10 py-2">
+    <div class="container">
+        <h1>Add New ResearchProduct</h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    <form method="post" enctype="multipart/form-data">
+
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" id="heading" asp-for="ResearchProduct.Title" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Summary</label>
+            <input type="text" class="form-control" id="pageTitle" asp-for="ResearchProduct.Summary" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Content</label>
+            <textarea class="form-control" id="content" asp-for="ResearchProduct.Content"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Categories</label>
+            <div>
+                @foreach (var category in Model.Categories)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="SelectedCategoryIds" value="@category.Id" />
+                        <label class="form-check-label">@category.Name</label>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" asp-for="ResearchProduct.CoverImg"></label>
+            <input type="file" name="file" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-dark">
+                Save
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        var editor = new FroalaEditor('#content');
+    </script>
+}

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Models.Entity.ProductImage>
+
+<div class="container my-5">
+    <h2 class="mb-4">Product Images</h2>
+    <div class="row">
+        @foreach (var image in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="@image.ImagePath" class="card-img-top" alt="Product Image">
+                    <div class="card-body text-center">
+                        <form asp-action="Delete" asp-controller="ProductImage" method="post">
+                            <input type="hidden" name="id" value="@image.Id" />
+                            <input type="hidden" name="productId" value="@image.ProductId" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="mt-4">
+        <a asp-action="Create" asp-route-productId="@Model.FirstOrDefault()?.ProductId" class="btn btn-primary">Add New Image</a>
+    </div>
+</div>

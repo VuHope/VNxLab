@@ -8,10 +8,11 @@ namespace Models.Entity
         [Key]
         public int Id { get; set; }
         public string? UserId { get; set; }
-        public string? Name { get; set; }
+        public string? CoverImg { get; set; }
         public string? Title { get; set; }
         public string? Summary { get; set; }
         public string? Content { get; set; }
+        public string? UrlHandle { get; set; }
         public DateTime CreatedAt { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser? ApplicationUser { get; set; }

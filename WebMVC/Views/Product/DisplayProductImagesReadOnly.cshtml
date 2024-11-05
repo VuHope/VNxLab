@@ -1,0 +1,76 @@
+﻿@model ProductViewModel
+
+@* <div class="container my-5">
+    <h1 class="mb-4">@Model.ResearchProduct.Title</h1>
+    <p>@Model.ResearchProduct.CreatedAt.ToShortDateString()</p>
+
+    <div class="row">
+        @foreach (var image in Model.ProductImages)
+        {
+            <div class="col-12 mb-4">
+                <div class="card image-card">
+                    <div class="image-container position-relative">
+                        <img src="@image.ImagePath" class="card-img-top" alt="Product Image">
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div> *@
+
+<div class="container my-5">
+    <h1 class="mb-4">@Model.ResearchProduct.Title</h1>
+    <p>@Model.ResearchProduct.CreatedAt.ToShortDateString()</p>
+
+    <div class="row">
+        @foreach (var image in Model.ProductImages)
+        {
+            <div class="col-12 mb-4">
+                <div class="card image-card">
+                    <div class="image-container position-relative">
+                        <img src="@image.ImagePath" class="card-img-top" alt="Product Image">
+
+                        <div class="category-overlay">
+                            @foreach (var category in Model.Categories)
+                            {
+                                <span class="badge">@category.Name</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .card-img-top {
+        width: 100%;
+        height: auto;
+    }
+
+    .image-container {
+        position: relative;
+    }
+
+    .category-overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: none; 
+        background: rgba(128, 128, 128, 0.8);
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    .image-container:hover .category-overlay {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .category-overlay .badge {
+        color: white;
+    }
+</style>
+
+
