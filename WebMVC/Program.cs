@@ -35,7 +35,6 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductImage, ProductImageRepository>();
-builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.AccessDeniedPath = new PathString("/Account/AccessDenied");
@@ -90,7 +89,7 @@ app.UseAuthorization();
 SeedDatabase();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Product}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 

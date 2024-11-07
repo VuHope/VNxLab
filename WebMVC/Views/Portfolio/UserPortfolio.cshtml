@@ -1,18 +1,12 @@
 ﻿@model ProductViewModel
 
-<div class="container my-5">
-    <div>
-        <h1 class="text-center mt-0" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">Welcome</h1>
-    </div>
-    <div class="row align-items-center mb-4">
+@{
+    ViewData["Title"] = ViewData["UserName"];
+}
 
-        <div class="col-6">
-            <h3 class="mb-0">All research products</h3>
-        </div>
-        <div class="col-6 text-end">
-            <a class="btn btn-primary" asp-controller="Product" asp-action="MyWorks">My Works</a>
-        </div>
-    </div>
+<div class="container my-5">
+    <h1 class="mb-4">@ViewData["UserName"]</h1>
+
     <div class="row">
         @if (Model != null && Model.ListResearchProduct.Any())
         {
@@ -41,13 +35,14 @@
                                 <small>@product.CreatedAt.ToString("MMMM dd, yyyy")</small>
                             </p>
                             <p class="card-text description">@product.Summary</p>
-                            <p class="text-muted">
-                                <small>Author: @ViewData[$"AuthorEmail_{product.Id}"]</small>
-                            </p>
                         </div>
                     </div>
                 </div>
             }
+        }
+        else
+        {
+            <p>No research products found for this user.</p>
         }
     </div>
 </div>
@@ -58,9 +53,9 @@
         border-radius: 8px;
         display: flex;
         flex-direction: column;
-        width: 100%; 
-        height: 400px; 
-        overflow: hidden; 
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
     }
 
         .product-card:hover {
@@ -89,7 +84,7 @@
     }
 
     .card-body {
-        flex: 1; 
+        flex: 1;
     }
 
     .card-text.description {
@@ -98,7 +93,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 3; 
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
     }
 
@@ -107,13 +102,11 @@
     }
 
         .card-title a:hover {
-            text-decoration: none; 
+            text-decoration: none;
         }
 
     .card-body .text-muted small {
-    color: #6c757d;
-    font-style: italic;
-}
+        color: #6c757d;
+        font-style: italic;
+    }
 </style>
-
-

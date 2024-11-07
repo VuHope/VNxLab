@@ -1,87 +1,65 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Models.Entity;
 using WebMVC.Data;
-using System.Net;
-
+using WebMVC.Utility;
+using WebMVC.ViewModels;
+using WebMVC.Repository.IRepository;
 
 namespace WebMVC.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-    using Models.Entity;
-    using System.Threading.Tasks;
-    using WebMVC.Repository.IRepository;
-
-    [Route("portfolio")]
     public class PortfolioController : Controller
     {
-        private readonly IPortfolioRepository _portfolioRepository;
+        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository _productRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PortfolioController(IPortfolioRepository portfolioRepository)
+        public PortfolioController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository)
         {
-            _portfolioRepository = portfolioRepository;
+            _context = context;
+            _userManager = userManager;
+            _productRepository = productRepository;
         }
 
-        [HttpGet("")]
-        public IActionResult Index(string category, string sortOrder)
+        public async Task<IActionResult> Index()
         {
-            var portfolios = _portfolioRepository.GetAllPortfolios(category, sortOrder);
-            return View(portfolios);
+            var users = await _productRepository.GetAll();
+            var userIdsWithProducts = users
+                .GroupBy(p => p.UserId)
+                .Where(g => g.Count() >= 1) 
+                .Select(g => g.Key)
+                .ToList();
+
+            var usersInRole = await _userManager.GetUsersInRoleAsync(SD.User);
+            var usersWithProducts = usersInRole
+                .Where(user => userIdsWithProducts.Contains(user.Id))
+                .ToList();
+
+            return View(usersWithProducts);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Details(int id)
+
+        public async Task<IActionResult> UserPortfolio(string userId)
         {
-            var portfolio = _portfolioRepository.GetPortfolioById(id);
-            if (portfolio == null)
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
             {
                 return NotFound();
             }
-            return View(portfolio);
-        }
 
-        [HttpGet("create")]
-        public IActionResult Create()
-        {
-            return View();
-        }
+            var userProducts = await _productRepository.GetAll();
+            var userWorks = userProducts.Where(p => p.UserId == userId).ToList();
 
-        [HttpPost("create")]
-        public IActionResult Create(Portfolio portfolio)
-        {
-            if (ModelState.IsValid)
+            var productViewModel = new ProductViewModel
             {
-                _portfolioRepository.AddPortfolio(portfolio);
-                return RedirectToAction("Index");
-            }
-            return View(portfolio);
+                ListResearchProduct = userWorks
+            };
+
+            ViewData["UserName"] = user.FullName;
+            return View(productViewModel);
         }
 
-        [HttpGet("edit/{id}")]
-        public IActionResult Edit(int id)
-        {
-            var portfolio = _portfolioRepository.GetPortfolioById(id);
-            if (portfolio == null)
-            {
-                return NotFound();
-            }
-            return View(portfolio);
-        }
 
-        [HttpPost("edit/{id}")]
-        public IActionResult Edit(int id, Portfolio portfolio)
-        {
-            if (ModelState.IsValid)
-            {
-                _portfolioRepository.UpdatePortfolio(portfolio);
-                return RedirectToAction("Index");
-            }
-            return View(portfolio);
-        }
 
-        [HttpPost("delete/{id}")]
-        public IActionResult Delete(int id)
-        {
-            _portfolioRepository.DeletePortfolio(id);
-            return RedirectToAction("Index");
-        }
     }
 }
