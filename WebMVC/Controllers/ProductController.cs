@@ -105,7 +105,7 @@ namespace WebMVC.Controllers
                 {
                     await _productRepository.AddCategoryToProduct(result.Id, categoryId);
                 }
-                return RedirectToAction("List");
+                return RedirectToAction("MyWorks");
             }
             return View(productViewModel);
         }
