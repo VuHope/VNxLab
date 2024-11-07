@@ -23,10 +23,21 @@ namespace WebMVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var usersInRole = await _userManager.GetUsersInRoleAsync(SD.User);
-            return View(usersInRole);
+            var users = await _productRepository.GetAll();
+            var userIdsWithProducts = users
+                .GroupBy(p => p.UserId)
+                .Where(g => g.Count() >= 1) 
+                .Select(g => g.Key)
+                .ToList();
 
+            var usersInRole = await _userManager.GetUsersInRoleAsync(SD.User);
+            var usersWithProducts = usersInRole
+                .Where(user => userIdsWithProducts.Contains(user.Id))
+                .ToList();
+
+            return View(usersWithProducts);
         }
+
 
         public async Task<IActionResult> UserPortfolio(string userId)
         {
