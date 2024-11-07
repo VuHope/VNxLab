@@ -4,7 +4,10 @@ namespace WebMVC.Repository.IRepository
 {
     public interface IPortfolioRepository
     {
-        Task<IEnumerable<Portfolio>> GetAllPortfoliosAsync(string category = null, bool sortByPopularity = false);
-        Task<Portfolio> GetPortfolioByIdAsync(int id);
+        IEnumerable<Portfolio> GetAllPortfolios(string category = null, string sortOrder = null);
+        Portfolio GetPortfolioById(int id);
+        void AddPortfolio(Portfolio portfolio);
+        void UpdatePortfolio(Portfolio portfolio);
+        void DeletePortfolio(int id);
     }
 }
