@@ -1,20 +1,35 @@
 ﻿@inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Localization
 
-<ul class="navbar-nav">
+<ul class="navbar-nav align-items-center">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <a class="nav-link" href="#">Hello @UserManager.GetUserName(User)</a>
+        <li class="nav-item d-flex align-items-center">
+            <!-- Hiển thị ảnh đại diện nếu có, nếu không hiển thị ảnh mặc định -->
+            @{
+                var user = await UserManager.GetUserAsync(User);
+                var userId = UserManager.GetUserId(User);
+                var fullName = user.FullName ?? "User"; // Hiển thị 'User' nếu FullName chưa có
+                var profilePictureUrl = user?.ProfilePictureUrl;
+            }
+            <a asp-action="DisplayUserProfile" asp-route-userId="@userId" asp-controller="UserProfile" 
+               class="d-flex align-items-center text-decoration-none">
+                <img src="@profilePictureUrl" alt="Profile Picture" class="rounded-circle profile-img">
+                <span class="nav-link px-2">Hello, @fullName</span>
+            </a>
         </li>
+
+        <!-- Nút Logout -->
         <li class="nav-item">
-            <form method="post" id="logoutForm" class="form-inline" asp-action="Logout" asp-controller="Account">
-                <button type="submit" class="nav-link btn btn-link">Logout</button>
+            <form method="post" id="logoutForm" asp-action="Logout" asp-controller="Account" class="mb-0">
+                <button type="submit" class="btn btn-link nav-link">Logout</button>
             </form>
         </li>
     }
     else
     {
+        <!-- Nút Register và Login khi chưa đăng nhập -->
         <li class="nav-item">
             <a class="nav-link" asp-action="Register" asp-controller="Account">Register</a>
         </li>
@@ -22,4 +37,53 @@
             <a class="nav-link" asp-action="Login" asp-controller="Account">Login</a>
         </li>
     }
+
+    <!-- Chọn ngôn ngữ -->
+    @{
+        var selectedCulture = Context.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName]?.Split('|').FirstOrDefault()?.Split('=').Last();
+        var englishOption = selectedCulture == "en-US" ? "<option value='en-US' selected>English</option>" : "<option value='en-US'>English</option>";
+        var vietnameseOption = selectedCulture == "vi-VN" ? "<option value='vi-VN' selected>Tiếng Việt</option>" : "<option value='vi-VN'>Tiếng Việt</option>";
+    }
+    <li class="nav-item ml-3">
+        <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" method="post" class="form-inline">
+            <select name="culture" onchange="this.form.submit();" class="form-control">
+                @Html.Raw(englishOption)
+                @Html.Raw(vietnameseOption)
+            </select>
+            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+        </form>
+    </li>
 </ul>
+
+<!-- CSS Styles -->
+<style>
+    .navbar-nav .nav-link {
+        font-weight: 500;
+        color: #343a40;
+        font-size: 1rem;
+    }
+    .navbar-nav .nav-link:hover {
+        color: #007bff;
+    }
+    .profile-img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 8px;
+    }
+    .btn-link.nav-link {
+        color: #343a40;
+        font-weight: 500;
+        padding: 0;
+    }
+    .btn-link.nav-link:hover {
+        color: #007bff;
+    }
+    .language-select {
+        background: #f8f9fa;
+        border: none;
+        padding: 0.3rem 1rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+    }
+</style>
