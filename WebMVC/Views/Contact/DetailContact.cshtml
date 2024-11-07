@@ -1,0 +1,39 @@
+﻿@model Contact
+
+<div class="container">
+
+    <form asp-action="SubmitDetailContact" asp-controller="Contact" method="post">
+        <fieldset disabled>
+       
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Name</label>
+            <input type="text" class="form-control" asp-for="Name" >
+        </div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input type="email" class="form-control" asp-for="Email" >
+        </div>
+        <div class="mb-3">
+            <label asp-for="Message" class="form-label">Message</label>
+            <input type="text" class="form-control" asp-for="Message" >
+        </div>
+        <div class="mb-3">
+            <label asp-for="CreatedAt" class="form-label">CreatedAt</label>
+            <input type="text" class="form-control" asp-for="CreatedAt" >
+        </div>
+        </fieldset>
+        <div class="mb-3">
+            <label asp-for="Answer" class="form-label">Answer</label>
+            <input type="text" class="form-control" asp-for="Answer">
+        </div>
+        @if (Model.Status == 0)
+        {
+            <div class="mb-3">
+                <input type="hidden" asp-for="Id">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        }
+       
+    </form>
+
+</div>

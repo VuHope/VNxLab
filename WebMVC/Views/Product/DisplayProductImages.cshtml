@@ -1,4 +1,4 @@
-﻿@model ProductViewModel
+﻿@* @model ProductViewModel
 
 <div class="container my-5">
     <h1 class="mb-4">@Model.ResearchProduct.Title</h1>
@@ -31,6 +31,27 @@
         </div>
         <button type="submit" class="btn btn-primary mt-3">Upload</button>
     </form>
+
+    <!-- Form cập nhật category -->
+    <h4 class="mt-4">Categories</h4>
+    <form asp-action="UpdateProductCategories" method="post">
+        <input type="hidden" name="productId" value="@Model.ResearchProduct.Id" />
+
+        <div class="form-group">
+            @foreach (var category in Model.Categories)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="selectedCategoryIds" value="@category.Id"
+                    @(Model.SelectedCategoryIds.Contains(category.Id) ? "checked" : "") />
+                    <label class="form-check-label">
+                        @category.Name
+                    </label>
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Lưu thay đổi</button>
+    </form>
 </div>
 
 <style>
@@ -47,14 +68,13 @@
         position: absolute;
         top: 10px;
         left: 10px;
-        display: none; 
+        display: none;
     }
 
     .image-container:hover .delete-button-form {
-        display: block; 
+        display: block;
     }
 
-    /* Định dạng nút Delete */
     .btn-delete {
         background-color: gray;
         color: white;
@@ -62,10 +82,109 @@
         font-size: 0.8rem;
         border: none;
         cursor: pointer;
-        opacity: 0.8; /* Độ mờ nhẹ */
+        opacity: 0.8;
         transition: opacity 0.3s ease;
     }
 
         .btn-delete:hover {
-            opacity: 1; 
+            opacity: 1;
+        }
+</style>
+
+
+
+
+ *@
+
+ @model ProductViewModel
+
+<div class="container my-5">
+    <h1 class="mb-4">@Model.ResearchProduct.Title</h1>
+    <p>@Model.ResearchProduct.CreatedAt.ToShortDateString()</p>
+
+    <div class="row">
+        @foreach (var image in Model.ProductImages)
+        {
+            <div class="col-12 mb-4">
+                <div class="card image-card">
+                    <div class="image-container position-relative">
+                        <img src="@image.ImagePath" class="card-img-top" alt="Product Image">
+
+                        <form asp-action="DeleteImage" method="post" class="delete-button-form">
+                            <input type="hidden" name="id" value="@image.Id" />
+                            <input type="hidden" name="productId" value="@Model.ResearchProduct.Id" />
+                            <button type="submit" class="btn btn-sm btn-delete">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h4 class="mt-4">Add pictures</h4>
+    <form asp-action="UploadImage" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <input type="file" name="file" class="form-control" />
+            <input type="hidden" asp-for="ResearchProduct.Id" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Upload</button>
+    </form>
+
+    <!-- Form cập nhật category -->
+    <h4 class="mt-4">Categories</h4>
+    <form asp-action="UpdateProductCategories" method="post">
+        <input type="hidden" name="productId" value="@Model.ResearchProduct.Id" />
+
+        <div class="form-group">
+            @foreach (var category in Model.Categories)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="selectedCategoryIds" value="@category.Id"
+                    @(Model.SelectedCategoryIds.Contains(category.Id) ? "checked" : "") />
+                    <label class="form-check-label">
+                        @category.Name
+                    </label>
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Lưu thay đổi</button>
+    </form>
+</div>
+
+<style>
+    .card-img-top {
+        width: 100%;
+        height: auto;
+    }
+
+    .image-container {
+        position: relative;
+    }
+
+    .delete-button-form {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: none;
+    }
+
+    .image-container:hover .delete-button-form {
+        display: block;
+    }
+
+    .btn-delete {
+        background-color: gray;
+        color: white;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+
+        .btn-delete:hover {
+            opacity: 1;
+        }
 </style>

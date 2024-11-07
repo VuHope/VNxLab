@@ -1,0 +1,75 @@
+﻿@model IEnumerable<PortfolioWebsite.Models.Portfolio>
+
+<style>
+    .container {
+        margin-top: 50px;
+        max-width: 1200px;
+    }
+
+    h2 {
+        font-weight: 700;
+        color: #333;
+    }
+
+    .portfolio-item {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .portfolio-item img {
+        width: 100%;
+        height: auto;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .portfolio-category {
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .button-link {
+        display: inline-block;
+        padding: 8px 12px;
+        margin-top: 10px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    .button-link:hover {
+        background-color: #0056b3;
+        text-decoration: none;
+    }
+</style>
+
+<div class="container">
+    <h2>Danh mục Portfolio</h2>
+    <div class="row">
+        @foreach (var portfolio in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card portfolio-item">
+                    <img src="@portfolio.Images.FirstOrDefault()" class="card-img-top" alt="Ảnh Portfolio">
+                    <div class="card-body">
+                        <h5 class="card-title">@portfolio.Title</h5>
+                        <p class="portfolio-category">@portfolio.Category</p>
+                        <p class="card-text">@portfolio.Description</p>
+                        <a href="@Url.Action("Details", "Portfolio", new { id = portfolio.Id })" class="button-link">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <a asp-action="Create" asp-controller="Portfolio" class="button-link mt-4">Tạo Portfolio mới</a>
+</div>
