@@ -7,35 +7,61 @@ namespace WebMVC.Repository
 {
     public class PortfolioRepository : IPortfolioRepository
     {
-        private readonly ApplicationDbContext _context;
-
-        public PortfolioRepository(ApplicationDbContext context)
+        private List<Portfolio> portfolios = new List<Portfolio>
         {
-            _context = context;
-        }
+            new Portfolio { Id = 1, Title = "Project A", Description = "Mô tả dự án A", Category = "Design", Popularity = 150, Images = new List<string> { "/images/projectA1.jpg" }, DateCreated = DateTime.Now },
+            new Portfolio { Id = 2, Title = "Project B", Description = "Mô tả dự án B", Category = "Web Development", Popularity = 200, Images = new List<string> { "/images/projectB1.jpg" }, DateCreated = DateTime.Now }
+        };
 
-        public async Task<IEnumerable<Portfolio>> GetAllPortfoliosAsync(string category = null, bool sortByPopularity = false)
+        public IEnumerable<Portfolio> GetAllPortfolios(string category = null, string sortOrder = null)
         {
-            var portfolios = _context.Portfolios.AsQueryable();
+            var query = portfolios.AsQueryable();
 
             if (!string.IsNullOrEmpty(category))
             {
-                portfolios = portfolios.Where(p => p.Category == category);
+                query = query.Where(p => p.Category == category);
             }
 
-            if (sortByPopularity)
+            if (sortOrder == "popularity")
             {
-                portfolios = portfolios.OrderByDescending(p => p.Popularity);
+                query = query.OrderByDescending(p => p.Popularity);
             }
 
-            return await portfolios.ToListAsync();
+            return query.ToList();
         }
 
-        public async Task<Portfolio> GetPortfolioByIdAsync(int id)
+        public Portfolio GetPortfolioById(int id)
         {
-            return await _context.Portfolios
-                                 .Include(p => p.Images) 
-                                 .FirstOrDefaultAsync(p => p.Id == id);
+            return portfolios.FirstOrDefault(p => p.Id == id);
+        }
+
+        public void AddPortfolio(Portfolio portfolio)
+        {
+            portfolio.Id = portfolios.Max(p => p.Id) + 1;
+            portfolios.Add(portfolio);
+        }
+
+        public void UpdatePortfolio(Portfolio portfolio)
+        {
+            var existingPortfolio = GetPortfolioById(portfolio.Id);
+            if (existingPortfolio != null)
+            {
+                existingPortfolio.Title = portfolio.Title;
+                existingPortfolio.Description = portfolio.Description;
+                existingPortfolio.Category = portfolio.Category;
+                existingPortfolio.Popularity = portfolio.Popularity;
+                existingPortfolio.Images = portfolio.Images;
+                existingPortfolio.VideoUrl = portfolio.VideoUrl;
+            }
+        }
+
+        public void DeletePortfolio(int id)
+        {
+            var portfolio = GetPortfolioById(id);
+            if (portfolio != null)
+            {
+                portfolios.Remove(portfolio);
+            }
         }
     }
 }

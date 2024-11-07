@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebMVC.Data;
+using System.Net;
+
 
 namespace WebMVC.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Models.Entity;
     using System.Threading.Tasks;
     using WebMVC.Repository.IRepository;
 
-    [Route("portfolio")] 
+    [Route("portfolio")]
     public class PortfolioController : Controller
     {
         private readonly IPortfolioRepository _portfolioRepository;
@@ -18,24 +21,67 @@ namespace WebMVC.Controllers
         }
 
         [HttpGet("")]
-        [HttpGet("category/{category?}/popularity/{sortByPopularity?}")]
-        public async Task<IActionResult> Index(string category = null, bool sortByPopularity = false)
+        public IActionResult Index(string category, string sortOrder)
         {
-            var portfolios = await _portfolioRepository.GetAllPortfoliosAsync(category, sortByPopularity);
+            var portfolios = _portfolioRepository.GetAllPortfolios(category, sortOrder);
             return View(portfolios);
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> Details(int id)
+        [HttpGet("{id}")]
+        public IActionResult Details(int id)
         {
-            var portfolio = await _portfolioRepository.GetPortfolioByIdAsync(id);
+            var portfolio = _portfolioRepository.GetPortfolioById(id);
             if (portfolio == null)
             {
                 return NotFound();
             }
             return View(portfolio);
         }
+
+        [HttpGet("create")]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost("create")]
+        public IActionResult Create(Portfolio portfolio)
+        {
+            if (ModelState.IsValid)
+            {
+                _portfolioRepository.AddPortfolio(portfolio);
+                return RedirectToAction("Index");
+            }
+            return View(portfolio);
+        }
+
+        [HttpGet("edit/{id}")]
+        public IActionResult Edit(int id)
+        {
+            var portfolio = _portfolioRepository.GetPortfolioById(id);
+            if (portfolio == null)
+            {
+                return NotFound();
+            }
+            return View(portfolio);
+        }
+
+        [HttpPost("edit/{id}")]
+        public IActionResult Edit(int id, Portfolio portfolio)
+        {
+            if (ModelState.IsValid)
+            {
+                _portfolioRepository.UpdatePortfolio(portfolio);
+                return RedirectToAction("Index");
+            }
+            return View(portfolio);
+        }
+
+        [HttpPost("delete/{id}")]
+        public IActionResult Delete(int id)
+        {
+            _portfolioRepository.DeletePortfolio(id);
+            return RedirectToAction("Index");
+        }
     }
-
-
 }

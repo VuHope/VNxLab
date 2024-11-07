@@ -10,8 +10,14 @@ namespace Models.Entity
         public string Title { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
-        public int Popularity { get; set; } 
+        public int Popularity { get; set; }
+        public List<string> Images { get; set; }
+        public string VideoUrl { get; set; }
+        public DateTime DateCreated { get; set; }
 
-        public List<PortfolioImage> Images { get; set; } = new List<PortfolioImage>();
+        public Portfolio()
+        {
+            Images = new List<string>();
+        }
     }
 }
