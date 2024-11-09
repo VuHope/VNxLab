@@ -17,7 +17,6 @@ namespace Models.Entity
         [ForeignKey("UserId")]
         public virtual ApplicationUser? ApplicationUser { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
-        public virtual ICollection<Rating>? Rating { get; set; }
         public virtual ICollection<ResearchProductCategory>? ResearchProductCategories { get; set; }
 
     }
