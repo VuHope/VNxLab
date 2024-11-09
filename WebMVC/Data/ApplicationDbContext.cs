@@ -15,13 +15,10 @@ namespace WebMVC.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Rating> Ratings { get; set; }
         public DbSet<ResearchProduct> ResearchProducts { get; set; }
         public DbSet<ResearchProductCategory> ResearchProductCategories { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<PortfolioImage> PortfolioImages { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<News> News { get; set; }
 
@@ -45,12 +42,6 @@ namespace WebMVC.Data
                 .HasOne(rp => rp.ApplicationUser)
                 .WithMany(u => u.ResearchProducts)
                 .HasForeignKey(rp => rp.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Rating>()
-                .HasOne(r => r.ResearchProduct)
-                .WithMany(rp => rp.Rating)
-                .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ResearchProductCategory>()

@@ -59,7 +59,5 @@ namespace WebMVC.Controllers
             return View(productViewModel);
         }
 
-
-
     }
 }
