@@ -17,7 +17,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WebMVC</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">VNxLab</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -31,6 +31,8 @@
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" asp-controller="AdminUser" asp-action="Index">Admin Users</a>
                                     <a class="dropdown-item" asp-controller="News" asp-action="List">Admin News</a>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="List">Admin Product</a>
+                                    <a class="dropdown-item" asp-controller="Category" asp-action="Index">Admin Category</a>
                                 </div>
                             </li>
                         }
@@ -44,10 +46,10 @@
                             <a class="nav-link" asp-controller="Product" asp-action="Index">Product</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Portfolio" asp-action="Index">Portfolio</a>
+                            <a class="nav-link" asp-area="" asp-controller="Portfolio" asp-action="Index">Portfolio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Contact" asp-action="Index">Contact</a>
+                            <a class="nav-link" asp-area="" asp-controller="Contact" asp-action="Index">Contact</a>
                         </li>
                     </ul>
                     
@@ -65,7 +67,7 @@
 
     <footer class="border-top footer bg-light">
         <div class="container">
-            &copy; 2024 - WebMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <p>&copy; 2024 VNXLabs. All rights reserved.</p>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

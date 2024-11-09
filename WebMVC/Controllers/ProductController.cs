@@ -16,14 +16,21 @@ namespace WebMVC.Controllers
         private readonly IProductImage _productImageRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IResearchProductComment _researchProductComment;
 
-        public ProductController(IProductRepository productRepository, IProductImage productImageRepository, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager, ICategoryRepository categoryRepository)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public ProductController(IProductRepository productRepository, IProductImage productImageRepository, 
+            IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager, 
+            ICategoryRepository categoryRepository, IResearchProductComment researchProductComment, 
+            SignInManager<ApplicationUser> signInManager)
         {
             _productRepository = productRepository;
             _productImageRepository = productImageRepository;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
             _categoryRepository = categoryRepository;
+            _researchProductComment = researchProductComment;
+            _signInManager = signInManager;
         }
 
         [Authorize(Roles = "Admin")]
@@ -74,14 +81,14 @@ namespace WebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductViewModel productViewModel, IFormFile? file)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-
-            if (userId == null)
+            // Lấy thông tin người dùng hiện tại từ Identity
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            productViewModel.ResearchProduct.UserId = userId;
+            productViewModel.ResearchProduct.UserId = user.Id;
 
             string wwwRootPath = _webHostEnvironment.WebRootPath;
             if (file != null)
@@ -89,15 +96,19 @@ namespace WebMVC.Controllers
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 string newsPath = Path.Combine(wwwRootPath, @"images\product");
 
+                if (!Directory.Exists(newsPath))
+                {
+                    Directory.CreateDirectory(newsPath);
+                }
+
                 using (var fileStream = new FileStream(Path.Combine(newsPath, fileName), FileMode.Create))
                 {
-                    file.CopyTo(fileStream);
+                    await file.CopyToAsync(fileStream);
                 }
 
                 productViewModel.ResearchProduct.CoverImg = @"\images\product\" + fileName;
             }
 
-            
             var result = await _productRepository.Create(productViewModel.ResearchProduct);
             if (result != null)
             {
@@ -107,8 +118,10 @@ namespace WebMVC.Controllers
                 }
                 return RedirectToAction("MyWorks");
             }
+
             return View(productViewModel);
         }
+
 
         // GET: ProductController/Edit/5
         public async Task<IActionResult> Update(int id)
@@ -243,22 +256,23 @@ namespace WebMVC.Controllers
         [Authorize]
         public async Task<IActionResult> MyWorks()
         {
-            var userId = HttpContext.Session.GetString("UserId");
-
-            if (userId == null)
+            // Lấy thông tin người dùng hiện tại từ Identity
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
+            var userId = user.Id;
             var userProducts = await _productRepository.GetAll();
             var userWorks = userProducts.Where(p => p.UserId == userId).ToList();
 
             foreach (var product in userWorks)
             {
-                var user = await _userManager.FindByIdAsync(product.UserId);
-                if (user != null)
+                var author = await _userManager.FindByIdAsync(product.UserId);
+                if (author != null)
                 {
-                    ViewData[$"AuthorEmail_{product.Id}"] = user.Email;
+                    ViewData[$"AuthorEmail_{product.Id}"] = author.Email;
                 }
             }
 
@@ -269,8 +283,6 @@ namespace WebMVC.Controllers
 
             return View(productViewModel);
         }
-
-
 
         [HttpGet]
         [AllowAnonymous]
@@ -283,8 +295,6 @@ namespace WebMVC.Controllers
             };
             return View(productViewModel);
         }
-
-
 
         [HttpGet]
         [AllowAnonymous]
@@ -333,16 +343,51 @@ namespace WebMVC.Controllers
             // Lấy tất cả các category của product
             var categories = await _categoryRepository.GetCategoriesByProductId(product.Id);
 
+            var researchProductComments = await _researchProductComment.GetByIdAsync(product.Id);
+
+            var researchProduct = new List<CommentViewModel>();
+
+            foreach (var item in researchProductComments)
+            {
+                researchProduct.Add(new CommentViewModel
+                {
+                    Content = item.Content,
+                    CreatedAt = item.CreatedAt,
+                    UserName = (await _userManager.FindByIdAsync(item.UserId.ToString())).UserName
+                });
+
+
+            }
             var productViewModel = new ProductViewModel
             {
                 ResearchProduct = product,
                 ProductImages = productImages.ToList(),
-                Categories = categories.ToList()
+                Categories = categories.ToList(),
+                Comment = researchProduct
             };
 
             return View(productViewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DisplayProductImagesReadOnly(ProductViewModel model)
+        {
+            if (_signInManager.IsSignedIn(User))
+            {
+                var domainModel = new Comment
+                {
+                    UserId = _userManager.GetUserId(User),
+                    ProductId = model.ResearchProduct.Id,
+                    Content = model.CommentContent,
+                    CreatedAt = DateTime.Now
+                };
+                
+                await _researchProductComment.AddAsync(domainModel);
+                return RedirectToAction("DisplayProductImagesReadOnly", "Product", new { urlHandle = model.ResearchProduct.UrlHandle });
+            }
+            return View();
+        }
         // POST: Product/UploadImage
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -367,7 +412,7 @@ namespace WebMVC.Controllers
 
                 await _productImageRepository.Create(productImage);
             }
-            return RedirectToAction("DisplayProductImages", new { id = model.ResearchProduct.Id });
+            return RedirectToAction("DisplayProductImages", new { UrlHandle = model.ResearchProduct.UrlHandle });
         }
 
         // POST: Product/DeleteImage

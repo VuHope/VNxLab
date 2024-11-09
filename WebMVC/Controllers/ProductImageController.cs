@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Models.Entity;
 using WebMVC.Repository.IRepository;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebMVC.Controllers
 {
+    [Authorize]
     public class ProductImageController : Controller
     {
         private readonly IProductImage _productImageRepository;

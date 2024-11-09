@@ -9,5 +9,7 @@ namespace WebMVC.ViewModels
         public List<ProductImage> ProductImages { get; set; }
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<int> SelectedCategoryIds { get; set; } = new List<int>();
+        public string CommentContent { get; set; }
+        public IEnumerable<CommentViewModel> Comment { get; set; }
     }
 }

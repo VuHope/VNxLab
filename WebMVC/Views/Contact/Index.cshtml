@@ -3,88 +3,93 @@
     int count = 1;
     var lstContact = ViewData["lstContact"] as List<Contact>;
 }
-<div class="container">
+<div class="container my-5">
     @if (User.IsInRole(SD.Admin))
     {
-       
-        // table bảng data contact
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">STT</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Message</th>
-                    <th scope="col">Answer</th>
-                    <th scope="col">Admin</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (lstContact.Count >0)
-                {
-                    
-                @foreach (var item in lstContact)
-                {
+        <!-- Bảng Data Contact -->
+        <div class="table-responsive p-4 rounded shadow-sm">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-primary">
                     <tr>
-                        <th scope="row">@count</th>
-                        <td>@item.Name</td>
-                        <td>@item.Email</td>
-                        <td>@item.Message</td>
-                        <td>@item.Answer</td>
-                        <td>@item.AdminId</td>
-                        @{
-                            if (item.Status == 0)
-                            {
-                                  <td class="text-warning">Chưa trả lời</td>
-                            }else if (item.Status == 1)
-                            {
-                                <td class="text-success">Đã trả lời</td>
-                            }else
-                            {
-                                <td class="text-danger">Từ chối</td>
-                            }
-                        }
-                        <td>
-                                <a asp-action="DetailContact" asp-controller="Contact" asp-route-id=@item.Id class="btn btn-primary">Chi Tiết</a>
-                                <a asp-action="DeleteContact" asp-controller="Contact" asp-route-id=@item.Id class="btn btn-danger">Xóa</a>
-                               
-                        </td>
+                        <th scope="col">STT</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Message</th>
+                        <th scope="col">Answer</th>
+                        <th scope="col">Admin</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                     </tr>
-                    count++;
-                }
-                }else{
-                    <tr></tr>
-                }
-                
-            </tbody>
-        </table>
-    }else if (User.IsInRole(SD.User) || true)
+                </thead>
+                <tbody>
+                    @if (lstContact.Count > 0)
+                    {
+                        @foreach (var item in lstContact)
+                        {
+                            <tr>
+                                <th scope="row">@count</th>
+                                <td>@item.Name</td>
+                                <td>@item.Email</td>
+                                <td>@item.Message</td>
+                                <td>@item.Answer</td>
+                                <td>@item.AdminId</td>
+                                @{
+                                    if (item.Status == 0)
+                                    {
+                                        <td class="text-warning">Chưa trả lời</td>
+                                    }
+                                    else if (item.Status == 1)
+                                    {
+                                        <td class="text-success">Đã trả lời</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-danger">Từ chối</td>
+                                    }
+                                }
+                                <td>
+                                    <a asp-action="DetailContact" asp-controller="Contact" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Chi Tiết</a>
+                                    <a asp-action="DeleteContact" asp-controller="Contact" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Xóa</a>
+                                </td>
+                            </tr>
+                            count++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">No data available</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else if (User.IsInRole(SD.User) || true)
     {
-        <div class="row">
-            <div class="col-4">
-                <h2>Cần hỗ trợ?</h2>
-                <p>Liên hệ với chúng tôi để được giải đáp.</p>
+        <div class="row align-items-center my-5 p-4 rounded shadow-sm">
+            <div class="col-lg-4 text-center text-lg-start">
+                <h2 class="text-primary">Cần hỗ trợ?</h2>
+                <p class="text-muted">Liên hệ với chúng tôi để được giải đáp.</p>
             </div>
-            <div class="col-8">
+            <div class="col-lg-8">
                 <form asp-controller="Contact" asp-action="SubmitContact" method="post">
                     <div class="mb-3">
-                        <label asp-for="Name"  class="form-label">Name<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" asp-for="Name">
+                        <label asp-for="Name" class="form-label">Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" asp-for="Name" placeholder="Enter your name" required>
                     </div>
                     <div class="mb-3">
                         <label asp-for="Email" class="form-label">Email<span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" asp-for="Email">
+                        <input type="email" class="form-control" asp-for="Email" placeholder="Enter your email" required>
                     </div>
                     <div class="mb-3">
                         <label asp-for="Message" class="form-label">Message</label>
-                        <textarea class="form-control" asp-for="Message" rows="3"></textarea>
+                        <textarea class="form-control" asp-for="Message" rows="3" placeholder="Your message"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
                 </form>
             </div>
         </div>
     }
-    
 </div>
+
