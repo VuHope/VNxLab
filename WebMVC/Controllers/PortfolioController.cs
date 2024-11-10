@@ -1,41 +1,63 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Models.Entity;
 using WebMVC.Data;
+using WebMVC.Utility;
+using WebMVC.ViewModels;
+using WebMVC.Repository.IRepository;
 
 namespace WebMVC.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-    using System.Threading.Tasks;
-    using WebMVC.Repository.IRepository;
-
-    [Route("portfolio")] 
     public class PortfolioController : Controller
     {
-        private readonly IPortfolioRepository _portfolioRepository;
+        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository _productRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PortfolioController(IPortfolioRepository portfolioRepository)
+        public PortfolioController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository)
         {
-            _portfolioRepository = portfolioRepository;
+            _context = context;
+            _userManager = userManager;
+            _productRepository = productRepository;
         }
 
-        [HttpGet("")]
-        [HttpGet("category/{category?}/popularity/{sortByPopularity?}")]
-        public async Task<IActionResult> Index(string category = null, bool sortByPopularity = false)
+        public async Task<IActionResult> Index()
         {
-            var portfolios = await _portfolioRepository.GetAllPortfoliosAsync(category, sortByPopularity);
-            return View(portfolios);
+            var users = await _productRepository.GetAll();
+            var userIdsWithProducts = users
+                .GroupBy(p => p.UserId)
+                .Where(g => g.Count() >= 1) 
+                .Select(g => g.Key)
+                .ToList();
+
+            var usersInRole = await _userManager.GetUsersInRoleAsync(SD.User);
+            var usersWithProducts = usersInRole
+                .Where(user => userIdsWithProducts.Contains(user.Id))
+                .ToList();
+
+            return View(usersWithProducts);
         }
 
-        [HttpGet("{id:int}")]
-        public async Task<IActionResult> Details(int id)
+
+        public async Task<IActionResult> UserPortfolio(string userId)
         {
-            var portfolio = await _portfolioRepository.GetPortfolioByIdAsync(id);
-            if (portfolio == null)
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
             {
                 return NotFound();
             }
-            return View(portfolio);
+
+            var userProducts = await _productRepository.GetAll();
+            var userWorks = userProducts.Where(p => p.UserId == userId).ToList();
+
+            var productViewModel = new ProductViewModel
+            {
+                ListResearchProduct = userWorks
+            };
+
+            ViewData["UserName"] = user.FullName;
+            return View(productViewModel);
         }
+
     }
-
-
 }

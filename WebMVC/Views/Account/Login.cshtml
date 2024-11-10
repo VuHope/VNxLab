@@ -1,51 +1,62 @@
 ﻿@model LoginViewModel
 
-<div class="row col-md-10 offset-md-1">
-    <h1 class="text-primary text-center pt-2">Login</h1>
+<style>
+    .login-container {
+        max-width: 500px;
+        margin: auto;
+        padding: 20px;
+    }
+    .login-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .form-control {
+        height: calc(2.25rem + 10px);
+    }
+    .btn-login {
+        font-size: 1rem;
+        font-weight: bold;
+        padding: 10px 20px;
+    }
+    .login-footer {
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="login-container">
+    <h1 class="login-title text-primary text-center pb-3">Login</h1>
     <form method="post" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]">
-        <div class="border p-2 rounded">
+        <div class="border p-4 rounded shadow-sm bg-white">
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                <div class="col-md-12">
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password"></label>
-                <div class="col-md-12">
-                    <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group pt-2">
-                <div class="col-md-12">
-                    <div class="custom-checkbox">
-                        <label>
-                            <input asp-for="RememberMe" /> Remember me
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group pt-3">
 
-                <div class="col-md-6 offset-md-3">
-                    <button type="submit" class="btn btn-success form-control">Login</button>
-                </div>
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
 
-                <div class="row">
-                    <div class="col-6">
-                        <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
-                    </div>
-                    <div class="col-6 text-end">
-                        <a asp-action="ForgotPassword">Forgot Password?</a>
-                    </div>
-                </div>
+            <div class="form-group mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" class="form-control" type="password" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-login w-100 mb-3">Login</button>
+
+            <div class="login-footer text-center">
+                <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" class="text-primary">Register as a new user?</a>
+                <span class="mx-2">|</span>
+                <a asp-action="ForgotPassword" class="text-primary">Forgot Password?</a>
             </div>
         </div>
     </form>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

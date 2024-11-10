@@ -13,7 +13,7 @@ namespace Models.Entity
         public string? Name { get; set; }
         public string? Message { get; set; }
         public string? Answer { get; set; }
-        public int Status { get; set; } = 0;// 0 - chưa trả lời, 1 - đã trả lời, 2 - từ chối
+        public int Status { get; set; } = 0;// 0 - chưa trả lời, 1 - đã trả lời
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [ForeignKey("UserId")]
         public virtual ApplicationUser? ApplicationUser { get; set; }

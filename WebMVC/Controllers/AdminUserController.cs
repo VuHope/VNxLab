@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +16,14 @@ namespace WebMVC.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AdminUserController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AdminUserController(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment webHostEnvironment)
         {
             _dbContext = dbContext;
             _userManager = userManager;
             _roleManager = roleManager;
+            _webHostEnvironment = webHostEnvironment;
         }
         public IActionResult Index()
         {
@@ -138,6 +141,78 @@ namespace WebMVC.Controllers
             }
             _dbContext.SaveChanges();
 
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> UserProfile(string userId)
+        {
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var model = new UserProfileViewModel
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                Email = user.Email,
+                Gender = user.Gender,
+                Address = user.Address,
+                City = user.City,
+                Country = user.Country,
+                ProfilePictureUrl = user.ProfilePictureUrl
+            };
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UserProfile(UserProfileViewModel model, IFormFile? file)
+        {
+            ApplicationUser user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            if (file != null)
+            {
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string newsPath = Path.Combine(wwwRootPath, @"images\profile");
+                if (!string.IsNullOrEmpty(model.ProfilePictureUrl))
+                {
+                    var oldImagePath =
+                        Path.Combine(wwwRootPath, model.ProfilePictureUrl.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+                using (var fileStream = new FileStream(Path.Combine(newsPath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+
+                model.ProfilePictureUrl = @"\images\profile\" + fileName;
+            }
+
+            user.FullName = model.FullName;
+            user.Gender = model.Gender;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Address = model.Address;
+            user.City = model.City;
+            user.Country = model.Country;
+            user.ProfilePictureUrl = model.ProfilePictureUrl;
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                TempData[SD.Error] = "Error while updating profile";
+                return View(model);
+            }
+
+            TempData[SD.Success] = "Profile updated successfully";
             return RedirectToAction(nameof(Index));
         }
     }

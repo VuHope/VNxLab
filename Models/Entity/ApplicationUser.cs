@@ -14,9 +14,7 @@ namespace Models.Entity
         [NotMapped]
         public string? Role { get; set; }
         public virtual ICollection<Contact>? Contacts { get; set; }
-        public virtual Portfolio? Portfolio { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
-        public virtual ICollection<Rating>? Ratings { get; set; }
         public virtual ICollection<ResearchProduct>? ResearchProducts { get; set; }
     }
 }

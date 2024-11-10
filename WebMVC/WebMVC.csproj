@@ -31,8 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\product\" />
     <Folder Include="wwwroot\images\news\" />
+    <Folder Include="wwwroot\images\profile\" />
+    <Folder Include="wwwroot\images\product\" />
   </ItemGroup>
 
   <ItemGroup>
