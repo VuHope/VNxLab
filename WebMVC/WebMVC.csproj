@@ -31,13 +31,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\news\" />
-    <Folder Include="wwwroot\images\profile\" />
-    <Folder Include="wwwroot\images\product\" />
+    <None Include="Resources\Controllers.HomeController.en-US.resx" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Resources\Controllers.HomeController.en-US.resx" />
+    <Folder Include="wwwroot\images\share\" />
+    <Folder Include="wwwroot\images\profile\" />
+    <Folder Include="wwwroot\images\product\" />
+    <Folder Include="wwwroot\images\news\" />
   </ItemGroup>
 
 </Project>

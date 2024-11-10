@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Models.Entity;
 using WebMVC.Repository;
 using WebMVC.Repository.IRepository;
@@ -412,7 +413,7 @@ namespace WebMVC.Controllers
 
                 await _productImageRepository.Create(productImage);
             }
-            return RedirectToAction("DisplayProductImages", new { UrlHandle = model.ResearchProduct.UrlHandle });
+            return RedirectToAction("DisplayProductImages", new { id = model.ResearchProduct.Id });
         }
 
         // POST: Product/DeleteImage
