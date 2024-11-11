@@ -117,7 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Welcome" xml:space="preserve">
-    <value>Chào mừng tới trang web của chúng tôi!</value>
+  <data name="TheWorld" xml:space="preserve">
+    <value>Thế giới của</value>
+  </data>
+  <data name="BestCreator" xml:space="preserve">
+    <value>Những người sáng tạo giỏi nhất</value>
+  </data>
+  <data name="AreRight" xml:space="preserve">
+    <value>đang ở đây!</value>
+  </data>
+  <data name="HomeSmallText" xml:space="preserve">
+    <value>Một nền tảng toàn diện giúp nhà tuyển dụng và người sáng tạo khám phá thế giới sáng tạo, từ việc tìm kiếm cảm hứng đến kết nối với nhau.</value>
+  </data>
+  <data name="HomeButtonProduct" xml:space="preserve">
+    <value>Khám phá sản phẩm</value>
+  </data>
+  <data name="HomeButtonAuthor" xml:space="preserve">
+    <value>Trở thành tác giả</value>
   </data>
 </root>
