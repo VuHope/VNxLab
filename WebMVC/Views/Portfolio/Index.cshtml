@@ -40,20 +40,23 @@
     </div>
 </div>
 
+
 <style>
     .user-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         border-radius: 8px;
         display: flex;
         flex-direction: column;
         width: 100%;
         overflow: hidden;
-        border: 1px solid #f0f0f0; 
+        background-color: #f8f9fa;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        border: none;
     }
 
         .user-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transform: scale(1.02);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
         }
 
     .image-container {
@@ -63,18 +66,58 @@
         text-align: center;
     }
 
-    .card-title a {
-        text-decoration: none;
-    }
-
-        .card-title a:hover {
-            text-decoration: none;
+        .image-container img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #ffffff; /* Inner white border */
+            box-shadow: 0 0 0 1px #b0b8c1; /* Outer lighter border */
+            transition: transform 0.2s ease, brightness 0.2s ease;
         }
 
-    .card-body .text-muted {
-        color: #6c757d;
+    .user-card:hover .image-container img {
+        transform: scale(1.05);
+        filter: brightness(0.95);
+    }
+
+    .card-body {
+        flex: 1;
+        padding: 1.5rem;
+        text-align: center;
+        color: #495057;
+    }
+
+    .card-title {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #343a40;
+    }
+
+        .card-title a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+            .card-title a:hover {
+                color: #6c757d;
+            }
+
+    .text-muted {
+        color: #adb5bd;
         font-style: italic;
     }
+
+    h1 {
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .container {
+        max-width: 1200px;
+    }
 </style>
+
+
 
 

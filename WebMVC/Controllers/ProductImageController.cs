@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebMVC.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ProductImageController : Controller
     {
         private readonly IProductImage _productImageRepository;
