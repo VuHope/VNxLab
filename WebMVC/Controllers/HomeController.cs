@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.Diagnostics;
 using System.Globalization;
+using WebMVC.Repository.IRepository;
 using WebMVC.ViewModels;
 
 namespace WebMVC.Controllers
@@ -11,19 +12,27 @@ namespace WebMVC.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IStringLocalizer<HomeController> _localizer;
+        private readonly IProductRepository _productRepository;
 
-        public HomeController(ILogger<HomeController> logger, IStringLocalizer<HomeController> localizer)
+        public HomeController(ILogger<HomeController> logger, IStringLocalizer<HomeController> localizer, IProductRepository productRepository)
         {
             _logger = logger;
             _localizer = localizer;
+            _productRepository = productRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            ViewData["Message"] = _localizer["Welcome"];
-            return View();
+            var products = await _productRepository.GetAll();
+            ViewData["TheWorld"] = _localizer["TheWorld"];
+            ViewData["BestCreator"] = _localizer["BestCreator"];
+            ViewData["AreRight"] = _localizer["AreRight"];
+            ViewData["HomeSmallText"] = _localizer["HomeSmallText"];
+            ViewData["HomeButtonProduct"] = _localizer["HomeButtonProduct"];
+            ViewData["HomeButtonAuthor"] = _localizer["HomeButtonAuthor"];
+            return View(products);
         }
-
+        
         public IActionResult Privacy()
         {
             return View();
