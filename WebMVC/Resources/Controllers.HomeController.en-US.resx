@@ -117,7 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Welcome" xml:space="preserve">
-    <value>Welcome to our website!</value>
+  <data name="TheWorld" xml:space="preserve">
+    <value>The World's</value>
+  </data>
+  <data name="BestCreator" xml:space="preserve">
+    <value>Best Creators</value>
+  </data>
+  <data name="AreRight" xml:space="preserve">
+    <value>Are Right Here</value>
+  </data>
+  <data name="HomeSmallText" xml:space="preserve">
+    <value>A comprehensive platform to help hirers and creators navigate the creative world from discovering inspiration, to connecting with one another</value>
+  </data>
+  <data name="HomeButtonProduct" xml:space="preserve">
+    <value>Explore products</value>
+  </data>
+  <data name="HomeButtonAuthor" xml:space="preserve">
+    <value>Become an author</value>
   </data>
 </root>
